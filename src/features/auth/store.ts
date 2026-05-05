@@ -10,6 +10,15 @@ export const useAuthStore = create<AuthState>((set) => ({
   authError: null,
   isAuthenticating: false,
   isBootstrapped: false,
+  setToken: (token) => {
+    if (token) {
+      localStorage.setItem(STORAGE_KEYS.token, token);
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.token);
+    }
+
+    set({ token });
+  },
   setTelegramProfile: (profile) => set({ telegramProfile: profile }),
   setAuthError: (authError) => set({ authError }),
   login: (token: string, user: User) => {

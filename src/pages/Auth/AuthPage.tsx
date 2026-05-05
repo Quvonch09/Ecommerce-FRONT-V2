@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchMe, getAuthErrorMessage, telegramLogin } from "@/features/auth/api";
+import { fetchMeWithToken, getAuthErrorMessage, telegramLogin } from "@/features/auth/api";
 import { useAuthStore } from "@/features/auth/store";
 import { useTelegramWebApp } from "@/shared/hooks/useTelegramWebApp";
 import { Button } from "@/shared/ui/Button";
@@ -14,6 +14,7 @@ export function AuthPage() {
   const telegramProfile = useAuthStore((state) => state.telegramProfile);
   const isAuthenticating = useAuthStore((state) => state.isAuthenticating);
   const authError = useAuthStore((state) => state.authError);
+  const setToken = useAuthStore((state) => state.setToken);
   const login = useAuthStore((state) => state.login);
   const setAuthError = useAuthStore((state) => state.setAuthError);
 
@@ -37,7 +38,8 @@ export function AuthPage() {
 
     try {
       const nextToken = await telegramLogin(manualTelegramId.trim());
-      const me = await fetchMe();
+      setToken(nextToken);
+      const me = await fetchMeWithToken(nextToken);
       login(nextToken, me);
     } catch (error) {
       setAuthError(`Manual login ishlamadi: ${getAuthErrorMessage(error)}`);

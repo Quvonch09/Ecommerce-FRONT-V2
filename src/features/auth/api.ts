@@ -24,6 +24,16 @@ export async function fetchMe() {
   return response.data.data;
 }
 
+export async function fetchMeWithToken(token: string) {
+  const response = await api.get<ApiResponse<User>>(endpoints.auth.me, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data.data;
+}
+
 export function getAuthErrorMessage(error: unknown) {
   if (axios.isAxiosError(error)) {
     const apiMessage = error.response?.data?.message;

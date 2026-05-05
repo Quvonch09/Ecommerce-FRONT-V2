@@ -8,6 +8,7 @@ export type AuthState = {
   authError: string | null;
   isAuthenticating: boolean;
   isBootstrapped: boolean;
+  setToken: (token: string | null) => void;
   setTelegramProfile: (profile: TelegramProfile | null) => void;
   setAuthError: (message: string | null) => void;
   login: (token: string, user: User) => void;

@@ -2,12 +2,13 @@ import { useEffect } from "react";
 import { bindUnauthorizedHandler } from "@/shared/api/axios";
 import { useTelegramWebApp } from "@/shared/hooks/useTelegramWebApp";
 import { extractTelegramProfile } from "@/shared/utils/telegram";
-import { fetchMe, getAuthErrorMessage, telegramLogin } from "./api";
+import { fetchMe, fetchMeWithToken, getAuthErrorMessage, telegramLogin } from "./api";
 import { useAuthStore } from "./store";
 
 export function AuthBootstrap() {
   const telegram = useTelegramWebApp();
   const token = useAuthStore((state) => state.token);
+  const setToken = useAuthStore((state) => state.setToken);
   const login = useAuthStore((state) => state.login);
   const logout = useAuthStore((state) => state.logout);
   const setTelegramProfile = useAuthStore((state) => state.setTelegramProfile);
@@ -45,7 +46,8 @@ export function AuthBootstrap() {
           }
 
           const nextToken = await telegramLogin(profile.telegramId);
-          const me = await fetchMe();
+          setToken(nextToken);
+          const me = await fetchMeWithToken(nextToken);
           login(nextToken, me);
         } else {
           const me = await fetchMe();
@@ -71,6 +73,7 @@ export function AuthBootstrap() {
     setAuthError,
     setAuthenticating,
     setBootstrapped,
+    setToken,
     setTelegramProfile,
     telegram,
     token,
