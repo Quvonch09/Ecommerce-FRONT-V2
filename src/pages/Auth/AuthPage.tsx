@@ -1,0 +1,50 @@
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useTelegramWebApp } from "@/shared/hooks/useTelegramWebApp";
+import { Button } from "@/shared/ui/Button";
+import { useAuthStore } from "@/features/auth/store";
+
+export function AuthPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const token = useAuthStore((state) => state.token);
+  const telegramProfile = useAuthStore((state) => state.telegramProfile);
+  useTelegramWebApp();
+
+  useEffect(() => {
+    if (token) {
+      const from = (location.state as { from?: string } | null)?.from ?? "/";
+      navigate(from, { replace: true });
+    }
+  }, [location.state, navigate, token]);
+
+  return (
+    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-8">
+      <div className="animate-rise rounded-[32px] bg-white p-7 shadow-soft">
+        <div className="inline-flex rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-600">
+          Telegram Mini App
+        </div>
+        <h1 className="mt-5 text-3xl font-semibold text-tg-text">Store access</h1>
+        <p className="mt-3 text-sm leading-6 text-tg-hint">
+          Authentication runs through Telegram WebApp user data. Open this app inside Telegram to
+          receive your JWT token automatically.
+        </p>
+
+        {telegramProfile ? (
+          <div className="mt-6 rounded-3xl bg-slate-50 p-4 text-sm text-tg-text">
+            <div className="font-semibold">
+              {telegramProfile.firstName} {telegramProfile.lastName}
+            </div>
+            <div className="mt-1 text-tg-hint">
+              @{telegramProfile.username || "no_username"} · ID {telegramProfile.telegramId}
+            </div>
+          </div>
+        ) : null}
+
+        <Button fullWidth className="mt-8" onClick={() => window.location.reload()}>
+          Retry Telegram login
+        </Button>
+      </div>
+    </div>
+  );
+}
