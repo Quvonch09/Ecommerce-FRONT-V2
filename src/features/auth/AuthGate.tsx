@@ -8,7 +8,12 @@ export function AuthGate({ children }: PropsWithChildren) {
   const { token, isBootstrapped, isAuthenticating, telegramProfile } = useAuthStore();
 
   if (!isBootstrapped || isAuthenticating) {
-    return <Loader />;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader />
+        <p className="mt-4 text-sm text-tg-hint animate-pulse">Initializing app...</p>
+      </div>
+    );
   }
 
   if (!token) {

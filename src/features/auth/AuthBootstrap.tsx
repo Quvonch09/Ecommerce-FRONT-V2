@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { bindUnauthorizedHandler } from "@/shared/api/axios";
 import { useTelegramWebApp } from "@/shared/hooks/useTelegramWebApp";
 import { extractTelegramProfile } from "@/shared/utils/telegram";
-import { fetchMe, getAuthErrorMessage, telegramLogin } from "./api";
+import { fetchMe, telegramLogin } from "./api";
 import { useAuthStore } from "./store";
 
 export function AuthBootstrap() {
@@ -12,7 +12,6 @@ export function AuthBootstrap() {
     login,
     logout,
     setTelegramProfile,
-    setAuthError,
     setAuthenticating,
     setBootstrapped,
   } = useAuthStore();
@@ -23,8 +22,8 @@ export function AuthBootstrap() {
 
   useEffect(() => {
     const run = async () => {
-      if (token && useAuthStore.getState().user) {
-        setBootstrapped(true);
+      // If already bootstrapped and we have a user, do nothing
+      if (useAuthStore.getState().isBootstrapped && useAuthStore.getState().user) {
         return;
       }
 
@@ -33,50 +32,32 @@ export function AuthBootstrap() {
       try {
         const profile = extractTelegramProfile(telegram);
         setTelegramProfile(profile);
-        setAuthError(null);
 
         if (!token) {
-          if (!profile?.telegramId) {
-            setAuthError(
-              telegram
-                ? "Telegram user data kelmadi. Mini App bot ichidagi WebApp tugmasi orqali ochilganini tekshiring."
-                : "Telegram WebApp API topilmadi. Ilovani aynan Telegram ichida oching.",
-            );
-            setBootstrapped(true);
-            return;
+          if (profile?.telegramId) {
+            const nextToken = await telegramLogin(profile.telegramId);
+            const me = await fetchMe();
+            login(nextToken, me);
           }
-
-          const nextToken = await telegramLogin(profile.telegramId);
-          const me = await fetchMe();
-          login(nextToken, me);
         } else {
-          const me = await fetchMe();
-          login(token, me);
+          try {
+            const me = await fetchMe();
+            login(token, me);
+          } catch (e) {
+            console.error("Token validation failed", e);
+            logout();
+          }
         }
       } catch (error) {
-        setAuthError(`Telegram login ishlamadi: ${getAuthErrorMessage(error)}`);
-
-        if (token) {
-          logout();
-          return;
-        }
+        console.error("Auth bootstrap error:", error);
       } finally {
         setBootstrapped(true);
         setAuthenticating(false);
       }
     };
 
-    void run();
-  }, [
-    login,
-    logout,
-    setAuthError,
-    setAuthenticating,
-    setBootstrapped,
-    setTelegramProfile,
-    telegram,
-    token,
-  ]);
+    run();
+  }, [telegram, token, login, logout, setTelegramProfile, setAuthenticating, setBootstrapped]);
 
   return null;
 }
