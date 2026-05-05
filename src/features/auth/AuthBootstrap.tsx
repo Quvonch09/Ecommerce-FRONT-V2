@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { bindUnauthorizedHandler } from "@/shared/api/axios";
 import { useTelegramWebApp } from "@/shared/hooks/useTelegramWebApp";
 import { extractTelegramProfile } from "@/shared/utils/telegram";
-import { fetchMe, telegramLogin } from "./api";
+import { fetchMe, getAuthErrorMessage, telegramLogin } from "./api";
 import { useAuthStore } from "./store";
 
 export function AuthBootstrap() {
@@ -54,12 +54,7 @@ export function AuthBootstrap() {
           login(token, me);
         }
       } catch (error) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Login jarayonida noma'lum xatolik yuz berdi.";
-
-        setAuthError(`Telegram login ishlamadi: ${message}`);
+        setAuthError(`Telegram login ishlamadi: ${getAuthErrorMessage(error)}`);
 
         if (token) {
           logout();

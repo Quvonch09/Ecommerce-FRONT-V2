@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { fetchMe, getAuthErrorMessage, telegramLogin } from "@/features/auth/api";
 import { useAuthStore } from "@/features/auth/store";
 import { useTelegramWebApp } from "@/shared/hooks/useTelegramWebApp";
 import { Button } from "@/shared/ui/Button";
@@ -7,11 +8,15 @@ import { Button } from "@/shared/ui/Button";
 export function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { token, telegramProfile, isAuthenticating, authError } = useAuthStore((state) => ({
+  const [manualTelegramId, setManualTelegramId] = useState("");
+  const [manualLoading, setManualLoading] = useState(false);
+  const { token, telegramProfile, isAuthenticating, authError, login, setAuthError } = useAuthStore((state) => ({
     token: state.token,
     telegramProfile: state.telegramProfile,
     isAuthenticating: state.isAuthenticating,
     authError: state.authError,
+    login: state.login,
+    setAuthError: state.setAuthError,
   }));
 
   useTelegramWebApp();
@@ -22,6 +27,26 @@ export function AuthPage() {
       navigate(from, { replace: true });
     }
   }, [location.state, navigate, token]);
+
+  const handleManualLogin = async () => {
+    if (!manualTelegramId.trim()) {
+      setAuthError("Telegram ID kiriting.");
+      return;
+    }
+
+    setManualLoading(true);
+    setAuthError(null);
+
+    try {
+      const nextToken = await telegramLogin(manualTelegramId.trim());
+      const me = await fetchMe();
+      login(nextToken, me);
+    } catch (error) {
+      setAuthError(`Manual login ishlamadi: ${getAuthErrorMessage(error)}`);
+    } finally {
+      setManualLoading(false);
+    }
+  };
 
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-8">
@@ -55,6 +80,30 @@ export function AuthPage() {
         {authError ? (
           <div className="mt-6 rounded-3xl bg-rose-50 p-4 text-sm leading-6 text-rose-700">
             {authError}
+          </div>
+        ) : null}
+
+        {!telegramProfile ? (
+          <div className="mt-6 rounded-3xl border border-slate-200 p-4">
+            <div className="text-sm font-semibold text-tg-text">Manual dev login</div>
+            <p className="mt-2 text-sm leading-6 text-tg-hint">
+              Browser yoki localhost ichida test qilish uchun backendda mavjud Telegram ID kiriting.
+            </p>
+            <input
+              value={manualTelegramId}
+              onChange={(event) => setManualTelegramId(event.target.value.replace(/\D/g, ""))}
+              inputMode="numeric"
+              placeholder="Telegram ID"
+              className="mt-4 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-sky-400"
+            />
+            <Button
+              fullWidth
+              className="mt-4"
+              onClick={handleManualLogin}
+              disabled={manualLoading}
+            >
+              {manualLoading ? "Logging in..." : "Login with Telegram ID"}
+            </Button>
           </div>
         ) : null}
 
