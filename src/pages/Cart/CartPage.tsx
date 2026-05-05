@@ -7,7 +7,10 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { formatPrice } from "@/shared/utils/currency";
 
 export function CartPage() {
-  const { items, clearCart, removeFromCart, updateQuantity } = useCartStore();
+  const items = useCartStore((state) => state.items);
+  const clearCart = useCartStore((state) => state.clearCart);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 

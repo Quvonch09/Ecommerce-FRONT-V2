@@ -10,14 +10,12 @@ export function AuthPage() {
   const location = useLocation();
   const [manualTelegramId, setManualTelegramId] = useState("");
   const [manualLoading, setManualLoading] = useState(false);
-  const { token, telegramProfile, isAuthenticating, authError, login, setAuthError } = useAuthStore((state) => ({
-    token: state.token,
-    telegramProfile: state.telegramProfile,
-    isAuthenticating: state.isAuthenticating,
-    authError: state.authError,
-    login: state.login,
-    setAuthError: state.setAuthError,
-  }));
+  const token = useAuthStore((state) => state.token);
+  const telegramProfile = useAuthStore((state) => state.telegramProfile);
+  const isAuthenticating = useAuthStore((state) => state.isAuthenticating);
+  const authError = useAuthStore((state) => state.authError);
+  const login = useAuthStore((state) => state.login);
+  const setAuthError = useAuthStore((state) => state.setAuthError);
 
   useTelegramWebApp();
 

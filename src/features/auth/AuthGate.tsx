@@ -5,13 +5,16 @@ import { useAuthStore } from "./store";
 
 export function AuthGate({ children }: PropsWithChildren) {
   const location = useLocation();
-  const { token, isBootstrapped, isAuthenticating, telegramProfile } = useAuthStore();
+  const token = useAuthStore((state) => state.token);
+  const isBootstrapped = useAuthStore((state) => state.isBootstrapped);
+  const isAuthenticating = useAuthStore((state) => state.isAuthenticating);
+  const telegramProfile = useAuthStore((state) => state.telegramProfile);
 
   if (!isBootstrapped || isAuthenticating) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex min-h-screen flex-col items-center justify-center">
         <Loader />
-        <p className="mt-4 text-sm text-tg-hint animate-pulse">Initializing app...</p>
+        <p className="mt-4 animate-pulse text-sm text-tg-hint">Initializing app...</p>
       </div>
     );
   }

@@ -6,7 +6,9 @@ import { Button } from "@/shared/ui/Button";
 import { formatPrice } from "@/shared/utils/currency";
 
 export function ProfilePage() {
-  const { user, telegramProfile, logout } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const telegramProfile = useAuthStore((state) => state.telegramProfile);
+  const logout = useAuthStore((state) => state.logout);
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
