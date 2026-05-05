@@ -1,14 +1,19 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/features/auth/store";
 import { useTelegramWebApp } from "@/shared/hooks/useTelegramWebApp";
 import { Button } from "@/shared/ui/Button";
-import { useAuthStore } from "@/features/auth/store";
 
 export function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const token = useAuthStore((state) => state.token);
-  const telegramProfile = useAuthStore((state) => state.telegramProfile);
+  const { token, telegramProfile, isAuthenticating, authError } = useAuthStore((state) => ({
+    token: state.token,
+    telegramProfile: state.telegramProfile,
+    isAuthenticating: state.isAuthenticating,
+    authError: state.authError,
+  }));
+
   useTelegramWebApp();
 
   useEffect(() => {
@@ -30,14 +35,26 @@ export function AuthPage() {
           receive your JWT token automatically.
         </p>
 
+        {isAuthenticating ? (
+          <div className="mt-6 rounded-3xl bg-sky-50 p-4 text-sm text-sky-700">
+            Telegram profiling va backend login tekshirilmoqda...
+          </div>
+        ) : null}
+
         {telegramProfile ? (
           <div className="mt-6 rounded-3xl bg-slate-50 p-4 text-sm text-tg-text">
             <div className="font-semibold">
               {telegramProfile.firstName} {telegramProfile.lastName}
             </div>
             <div className="mt-1 text-tg-hint">
-              @{telegramProfile.username || "no_username"} · ID {telegramProfile.telegramId}
+              @{telegramProfile.username || "no_username"} | ID {telegramProfile.telegramId}
             </div>
+          </div>
+        ) : null}
+
+        {authError ? (
+          <div className="mt-6 rounded-3xl bg-rose-50 p-4 text-sm leading-6 text-rose-700">
+            {authError}
           </div>
         ) : null}
 

@@ -12,6 +12,7 @@ export function AuthBootstrap() {
     login,
     logout,
     setTelegramProfile,
+    setAuthError,
     setAuthenticating,
     setBootstrapped,
   } = useAuthStore();
@@ -22,14 +23,25 @@ export function AuthBootstrap() {
 
   useEffect(() => {
     const run = async () => {
+      if (token && useAuthStore.getState().user) {
+        setBootstrapped(true);
+        return;
+      }
+
       setAuthenticating(true);
 
       try {
         const profile = extractTelegramProfile(telegram);
         setTelegramProfile(profile);
+        setAuthError(null);
 
         if (!token) {
           if (!profile?.telegramId) {
+            setAuthError(
+              telegram
+                ? "Telegram user data kelmadi. Mini App bot ichidagi WebApp tugmasi orqali ochilganini tekshiring."
+                : "Telegram WebApp API topilmadi. Ilovani aynan Telegram ichida oching.",
+            );
             setBootstrapped(true);
             return;
           }
@@ -37,22 +49,39 @@ export function AuthBootstrap() {
           const nextToken = await telegramLogin(profile.telegramId);
           const me = await fetchMe();
           login(nextToken, me);
-          setBootstrapped(true);
+        } else {
+          const me = await fetchMe();
+          login(token, me);
+        }
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Login jarayonida noma'lum xatolik yuz berdi.";
+
+        setAuthError(`Telegram login ishlamadi: ${message}`);
+
+        if (token) {
+          logout();
           return;
         }
-
-        const me = await fetchMe();
-        login(token, me);
-        setBootstrapped(true);
-      } catch {
-        logout();
       } finally {
+        setBootstrapped(true);
         setAuthenticating(false);
       }
     };
 
     void run();
-  }, [login, logout, setAuthenticating, setBootstrapped, setTelegramProfile, telegram, token]);
+  }, [
+    login,
+    logout,
+    setAuthError,
+    setAuthenticating,
+    setBootstrapped,
+    setTelegramProfile,
+    telegram,
+    token,
+  ]);
 
   return null;
 }
