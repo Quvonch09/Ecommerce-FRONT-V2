@@ -3,19 +3,25 @@ import type { User } from "@/entities/user/model";
 import { api } from "@/shared/api/axios";
 import { endpoints } from "@/shared/api/endpoints";
 import type { ApiResponse } from "@/shared/api/types";
+import type { UserRole } from "@/entities/user/model";
+
+export type TelegramLoginResult = {
+  token: string;
+  role?: UserRole;
+};
 
 export async function telegramLogin(telegramId: string) {
   try {
-    const response = await api.post<ApiResponse<{ token: string }>>(endpoints.auth.telegram, {
+    const response = await api.post<ApiResponse<TelegramLoginResult>>(endpoints.auth.telegram, {
       telegramId,
     });
-    return response.data.data.token;
+    return response.data.data;
   } catch (primaryError) {
-    const fallback = await api.post<ApiResponse<{ token: string }>>(endpoints.auth.telegramFallback, {
+    const fallback = await api.post<ApiResponse<TelegramLoginResult>>(endpoints.auth.telegramFallback, {
       telegramId,
     });
     if (fallback.data.data.token) {
-      return fallback.data.data.token;
+      return fallback.data.data;
     }
 
     throw primaryError;

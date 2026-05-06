@@ -39,10 +39,10 @@ export function AuthPage() {
     setAuthError(null);
 
     try {
-      const nextToken = await telegramLogin(manualTelegramId.trim());
-      setToken(nextToken);
-      const me = await fetchMeWithToken(nextToken);
-      login(nextToken, me);
+      const auth = await telegramLogin(manualTelegramId.trim());
+      setToken(auth.token);
+      const me = await fetchMeWithToken(auth.token);
+      login(auth.token, me);
     } catch (error) {
       setAuthError(`Manual login ishlamadi: ${getAuthErrorMessage(error)}`);
     } finally {

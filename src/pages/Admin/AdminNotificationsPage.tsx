@@ -64,7 +64,7 @@ export function AdminNotificationsPage() {
       <PageSection title="Mini app link" subtitle="Telegram bot API">
         <div className="grid gap-4">
           <input className="rounded-[18px] border border-slate-200 px-4 py-3 outline-none focus:border-sky-300" value={openAppUserId} onChange={(event) => setOpenAppUserId(event.target.value.replace(/\D/g, ""))} placeholder="User ID for open-app" />
-          <button className="rounded-[20px] bg-slate-950 px-4 py-3 text-sm font-semibold text-white" disabled={busy === "open-app"} onClick={() => void handleOpenApp()}>
+          <button className="rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-950" disabled={busy === "open-app"} onClick={() => void handleOpenApp()}>
             Mini app link yuborish
           </button>
         </div>

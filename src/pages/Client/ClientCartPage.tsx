@@ -102,21 +102,21 @@ export function ClientCartPage() {
               </div>
             ))}
 
-            <div className="rounded-[28px] bg-slate-950 p-5 text-white">
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 text-slate-950">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white/70">Jami</span>
+                <span className="text-sm text-slate-500">Jami</span>
                 <span className="text-2xl font-semibold">{formatPrice(total)}</span>
               </div>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <button
-                  className="rounded-[20px] bg-white px-4 py-3 text-sm font-semibold text-slate-950"
+                  className="rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-950"
                   disabled={submittingOrder}
                   onClick={() => void handleCheckout(false)}
                 >
                   {submittingOrder ? "Yuborilmoqda..." : "Debt'siz checkout"}
                 </button>
                 <button
-                  className="rounded-[20px] border border-white/20 px-4 py-3 text-sm font-semibold text-white"
+                  className="rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-950"
                   disabled={submittingOrder}
                   onClick={() => void handleCheckout(true)}
                 >
@@ -145,7 +145,7 @@ export function ClientCartPage() {
             placeholder="Yetkazib berish manzili"
           />
           <button
-            className="rounded-[20px] bg-slate-950 px-4 py-3 text-sm font-semibold text-white"
+            className="rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-950"
             disabled={submittingDelivery}
             onClick={() => void handleCreateDelivery()}
           >

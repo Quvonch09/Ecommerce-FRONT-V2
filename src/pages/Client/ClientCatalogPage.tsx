@@ -89,7 +89,7 @@ export function ClientCatalogPage() {
                 </button>
                 <div className="border-t border-slate-200 p-4">
                   <button
-                    className="w-full rounded-[20px] bg-slate-950 px-4 py-3 text-sm font-semibold text-white"
+                    className="w-full rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-950"
                     onClick={() => addToCart(product)}
                   >
                     Savatga qo'shish
@@ -128,7 +128,7 @@ export function ClientCatalogPage() {
                       Yaratilgan vaqt: {formatDate(selectedProduct.createdAt)}
                     </div>
                     <button
-                      className="mt-5 w-full rounded-[20px] bg-slate-950 px-4 py-3 text-sm font-semibold text-white"
+                      className="mt-5 w-full rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-950"
                       onClick={() => addToCart(selectedProduct)}
                     >
                       Shu mahsulotni buyurtma qilish

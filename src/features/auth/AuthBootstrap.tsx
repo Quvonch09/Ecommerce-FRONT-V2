@@ -45,10 +45,10 @@ export function AuthBootstrap() {
             return;
           }
 
-          const nextToken = await telegramLogin(profile.telegramId);
-          setToken(nextToken);
-          const me = await fetchMeWithToken(nextToken);
-          login(nextToken, me);
+          const auth = await telegramLogin(profile.telegramId);
+          setToken(auth.token);
+          const me = await fetchMeWithToken(auth.token);
+          login(auth.token, me);
         } else {
           const me = await fetchMe();
           login(token, me);

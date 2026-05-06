@@ -116,7 +116,7 @@ export function ClientDebtsPage() {
                     History
                   </button>
                   <button
-                    className="rounded-[20px] bg-slate-950 px-4 py-3 text-sm font-semibold text-white"
+                    className="rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-950"
                     disabled={submittingPayment === debt.id}
                     onClick={() => void handlePayDebt(debt.id)}
                   >

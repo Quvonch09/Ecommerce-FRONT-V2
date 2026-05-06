@@ -30,6 +30,11 @@ function RoleLanding() {
   return <Navigate to={homePathByRole(user?.role)} replace />;
 }
 
+function AdminLanding() {
+  const role = useAuthStore((state) => state.user?.role);
+  return <Navigate to={role === "ROLE_ADMIN" ? "/admin/dashboard" : "/admin/products"} replace />;
+}
+
 function AdminShell() {
   const role = useAuthStore((state) => state.user?.role);
 
@@ -44,7 +49,7 @@ function AdminShell() {
 
 function ClientShell() {
   return (
-    <AuthGate>
+    <AuthGate allowedRoles={["ROLE_USER"]}>
       <AppLayout area="client" canManageAdmin={false}>
         <Outlet />
       </AppLayout>
@@ -71,7 +76,7 @@ export function AppRouter() {
             />
           </Route>
           <Route path="/admin" element={<AdminShell />}>
-            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route index element={<AdminLanding />} />
             <Route path="dashboard" element={<AdminDashboardPage />} />
             <Route path="products" element={<AdminProductsPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
