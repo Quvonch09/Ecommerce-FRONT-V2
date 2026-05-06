@@ -1,14 +1,31 @@
 export const endpoints = {
   auth: {
     telegram: "/api/auth/telegram",
+    telegramFallback: "/api/auth/auth/telegram",
     me: "/api/user/me",
   },
-  products: {
-    list: "/api/app/products",
-    byId: (id: string | number) => `/api/app/products/${id}`,
+  app: {
+    products: "/api/app/products",
+    productById: (id: string | number) => `/api/app/products/${id}`,
+    stock: "/api/app/stock",
+    stockByProductId: (productId: string | number) => `/api/app/stock/${productId}`,
+    orders: "/api/app/orders",
+    orderById: (id: string | number) => `/api/app/orders/${id}`,
+    orderStatus: (id: string | number) => `/api/app/orders/${id}/status`,
+    myOrders: "/api/app/orders/my",
+    debts: "/api/app/debts",
+    myDebts: "/api/app/debts/my",
+    payments: "/api/app/payments",
+    paymentsByDebtId: (debtId: string | number) => `/api/app/payments/${debtId}`,
+    deliveries: "/api/app/deliveries",
+    deliveryStatus: (id: string | number) => `/api/app/deliveries/${id}/status`,
   },
-  orders: {
-    create: "/api/app/orders",
-    my: "/api/app/orders/my",
+  admin: {
+    dashboard: "/api/admin/dashboard",
+    orders: "/api/admin/orders",
+    users: "/api/admin/users",
+    sellers: "/api/admin/sellers",
+    openApp: (userId: string | number) => `/api/admin/telegram-bot/open-app/${userId}`,
+    debtReminder: "/api/admin/telegram-bot/notify/debt",
   },
 } as const;

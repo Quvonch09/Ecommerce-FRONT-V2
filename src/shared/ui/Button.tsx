@@ -16,12 +16,12 @@ export function Button({
   return (
     <button
       className={clsx(
-        "inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-semibold transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex items-center justify-center rounded-[20px] px-4 py-3 text-sm font-semibold transition duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60",
         {
-          "bg-tg-accent text-tg-accentText shadow-soft": variant === "primary",
-          "bg-white text-tg-text shadow-soft": variant === "secondary",
-          "bg-transparent text-tg-text": variant === "ghost",
-          "bg-rose-500 text-white shadow-soft": variant === "danger",
+          "bg-slate-950 text-white shadow-soft hover:bg-slate-800": variant === "primary",
+          "bg-white text-tg-text shadow-soft hover:bg-slate-50": variant === "secondary",
+          "bg-transparent text-tg-text hover:bg-slate-100": variant === "ghost",
+          "bg-rose-500 text-white shadow-soft hover:bg-rose-600": variant === "danger",
           "w-full": fullWidth,
         },
         className,

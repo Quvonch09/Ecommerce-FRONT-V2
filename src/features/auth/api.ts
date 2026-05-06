@@ -2,21 +2,24 @@ import axios from "axios";
 import type { User } from "@/entities/user/model";
 import { api } from "@/shared/api/axios";
 import { endpoints } from "@/shared/api/endpoints";
-
-type ApiResponse<T> = {
-  success: boolean;
-  message: string;
-  status: number;
-  data: T;
-  timestamp: string;
-};
+import type { ApiResponse } from "@/shared/api/types";
 
 export async function telegramLogin(telegramId: string) {
-  const response = await api.post<ApiResponse<{ token: string }>>(endpoints.auth.telegram, {
-    telegramId,
-  });
+  try {
+    const response = await api.post<ApiResponse<{ token: string }>>(endpoints.auth.telegram, {
+      telegramId,
+    });
+    return response.data.data.token;
+  } catch (primaryError) {
+    const fallback = await api.post<ApiResponse<{ token: string }>>(endpoints.auth.telegramFallback, {
+      telegramId,
+    });
+    if (fallback.data.data.token) {
+      return fallback.data.data.token;
+    }
 
-  return response.data.data.token;
+    throw primaryError;
+  }
 }
 
 export async function fetchMe() {

@@ -1,3 +1,5 @@
+export type UserRole = "ROLE_ADMIN" | "ROLE_SELLER" | "ROLE_USER";
+
 export type User = {
   id: number;
   telegramId: number;
@@ -5,7 +7,7 @@ export type User = {
   firstName: string;
   lastName?: string;
   username?: string;
-  role: "ROLE_ADMIN" | "ROLE_SELLER" | "ROLE_USER";
+  role: UserRole;
   createdAt: string;
 };
 

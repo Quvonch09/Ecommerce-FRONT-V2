@@ -1,11 +1,18 @@
 import type { PropsWithChildren } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import type { UserRole } from "@/entities/user/model";
 import { Loader } from "@/shared/ui/Loader";
+import { homePathByRole } from "./roles";
 import { useAuthStore } from "./store";
 
-export function AuthGate({ children }: PropsWithChildren) {
+type Props = PropsWithChildren<{
+  allowedRoles?: UserRole[];
+}>;
+
+export function AuthGate({ children, allowedRoles }: Props) {
   const location = useLocation();
   const token = useAuthStore((state) => state.token);
+  const user = useAuthStore((state) => state.user);
   const isBootstrapped = useAuthStore((state) => state.isBootstrapped);
   const isAuthenticating = useAuthStore((state) => state.isAuthenticating);
   const telegramProfile = useAuthStore((state) => state.telegramProfile);
@@ -27,6 +34,10 @@ export function AuthGate({ children }: PropsWithChildren) {
         state={{ from: location.pathname, hasTelegramProfile: Boolean(telegramProfile) }}
       />
     );
+  }
+
+  if (allowedRoles?.length && user && !allowedRoles.includes(user.role)) {
+    return <Navigate to={homePathByRole(user.role)} replace />;
   }
 
   return <>{children}</>;
